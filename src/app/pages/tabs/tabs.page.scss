@@ -1,0 +1,27 @@
+ion-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  ion-router-outlet {
+    flex: 1;
+    overflow: auto; /* allow inner pages to scroll */
+  }
+}
+
+.center-tab .fab-btn {
+  width: 56px;
+  height: 56px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -20px;
+  box-shadow: 0 4px 16px rgba(26,35,126,0.4);
+
+  ion-icon {
+    color: #fff;
+    font-size: 28px;
+  }
+}

@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Incidencias</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar incidencias..."
+      [(ngModel)]="searchTerm"
+      (ionInput)="onSearchInput($event)"
+      debounce="200"
+      [showClearButton]="true"
+    ></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="activeFilter" (ionChange)="onFilterChange($event)" mode="md">
+      <ion-segment-button value="todos">Todos</ion-segment-button>
+      <ion-segment-button value="pendiente">Pendiente</ion-segment-button>
+      <ion-segment-button value="en_reparacion">Reparación</ion-segment-button>
+      <ion-segment-button value="listo">Listo</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollY]="true" class="reports-content">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      pullingText="Desliza para actualizar"
+      refreshingSpinner="crescent"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="report-list">
+    <ion-card class="report-list-card" button *ngFor="let r of filtered()" (click)="viewReportDetails(r)">
+      <ion-card-content>
+        <div class="card-row">
+          <div class="thumb-wrap">
+            <img [src]="r.photoUrl || 'assets/img/placeholder.png'" class="thumb-img" [alt]="r.title" />
+          </div>
+          <div class="card-info">
+            <div class="card-top">
+              <span class="card-title">{{ r.title }}</span>
+              <span class="badge" [ngClass]="getStatusClass(r.status)">{{ getStatusLabel(r.status) }}</span>
+            </div>
+            <p class="card-location">
+              <ion-icon name="location-outline"></ion-icon> {{ r.location }}
+            </p>
+            <p class="card-date">{{ r.createdAt | timeAgo }}</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="empty-state" *ngIf="filtered().length === 0">
+      <ion-icon name="document-outline"></ion-icon>
+      <p>No se encontraron incidencias</p>
+    </div>
+  </div>
+
+  <!-- Modal para ver detalles -->
+  <ion-modal [isOpen]="isModalOpen" [breakpoints]="[0, 0.5, 1]" [initialBreakpoint]="0.5" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Detalles del Incidente</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content *ngIf="selectedReport">
+        <div class="modal-content">
+          <img [src]="selectedReport.photoUrl || 'assets/img/placeholder.png'" class="detail-image" [alt]="selectedReport.title" />
+          <div class="detail-section">
+            <h2>{{ selectedReport.title }}</h2>
+            <p><strong>Ubicación:</strong> {{ selectedReport.location }}</p>
+            <p><strong>Estado:</strong> <span class="badge" [ngClass]="getStatusClass(selectedReport.status)">{{ getStatusLabel(selectedReport.status) }}</span></p>
+            <p><strong>Descripción:</strong> {{ selectedReport.description }}</p>
+            <p><strong>Reportado por:</strong> {{ selectedReport.reportedByName }}</p>
+            <p><strong>Fecha:</strong> {{ selectedReport.createdAt | timeAgo }}</p>
+            <ion-button expand="block" (click)="goToDetail(selectedReport.id)">Ver Detalle Completo</ion-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

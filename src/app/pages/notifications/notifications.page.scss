@@ -1,0 +1,141 @@
+.notifications-content {
+  background: linear-gradient(135deg, rgba(26,35,126,0.02) 0%, rgba(57,73,171,0.02) 100%);
+  min-height: 100%;
+}
+
+.notifications-list {
+  background: transparent;
+  padding: 12px 0;
+  
+  .notif-item {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --inner-padding-end: 0;
+    border-bottom: 1px solid #E5E7EB;
+    margin: 8px 12px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s;
+    cursor: pointer;
+    
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.unread {
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+      border-left: 4px solid var(--color-primary);
+      
+      ::part(native) {
+        background: transparent;
+      }
+    }
+
+    .notif-icon {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+
+    ion-label {
+      padding: 8px 0;
+
+      .notif-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0 0 4px;
+        color: #1A1A2E !important;
+      }
+
+      .notif-body {
+        font-size: 13px;
+        margin: 3px 0;
+        color: #4B5563 !important;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+
+      .notif-time {
+        font-size: 11px;
+        margin-top: 6px;
+        color: #9CA3AF !important;
+      }
+    }
+
+    .urgent-badge {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+}
+
+.empty-notifications {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  text-align: center;
+  padding: 40px 20px;
+
+  ion-icon {
+    font-size: 80px;
+    color: #E5E7EB;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A1A2E;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #9CA3AF;
+    margin: 0 0 24px;
+    line-height: 1.6;
+  }
+
+  ion-button {
+    margin-top: 16px;
+  }
+}
+
+.notif-modal-content {
+  --background: #f5f5f5;
+
+  .modal-content {
+    padding: 20px;
+
+    .detail-image {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 0 0 12px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #4b5563;
+      margin: 8px 0;
+      line-height: 1.5;
+
+      strong {
+        color: #1a1a2e;
+      }
+    }
+  }
+}

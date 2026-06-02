@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content" [scrollY]="true">
+  <div class="profile-hero">
+    <div class="avatar-circle">
+      <ion-icon name="person-outline"></ion-icon>
+    </div>
+    <h2>{{ user()?.name }}</h2>
+    <p class="profile-email">{{ user()?.email }}</p>
+    <span class="role-badge">{{ getRoleLabel(user()?.role) }}</span>
+  </div>
+
+  <ion-list lines="none" class="profile-list">
+    <ion-item>
+      <ion-icon name="business-outline" slot="start"></ion-icon>
+      <ion-label>
+        <h3>Departamento</h3>
+        <p>{{ user()?.department ?? 'No asignado' }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-icon name="document-text-outline" slot="start"></ion-icon>
+      <ion-label>
+        <h3>Mis reportes</h3>
+        <p>{{ myReportsCount }} incidencias creadas</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="logout-section">
+    <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
+      <ion-icon name="log-out-outline" slot="start"></ion-icon>
+      Cerrar Sesión
+    </ion-button>
+  </div>
+</ion-content>

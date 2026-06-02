@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detail-content" *ngIf="report">
+
+  <!-- ID y estado -->
+  <div class="detail-hero">
+    <img [src]="report.photoUrl" class="hero-img" [alt]="report.title" />
+    <div class="hero-overlay">
+      <span class="report-id">{{ report.id }}</span>
+      <span class="badge" [ngClass]="getStatusClass(report.status)">{{ getStatusLabel(report.status) }}</span>
+    </div>
+  </div>
+
+  <div class="detail-body">
+    <h2 class="detail-title">{{ report.title }}</h2>
+
+    <!-- Meta info -->
+    <div class="meta-grid">
+      <div class="meta-item">
+        <ion-icon name="location-outline"></ion-icon>
+        <div><span class="meta-label">Ubicación</span><p>{{ report.location }}</p></div>
+      </div>
+      <div class="meta-item">
+        <ion-icon name="flag-outline"></ion-icon>
+        <div><span class="meta-label">Prioridad</span><p [ngClass]="'priority-' + report.priority">{{ report.priority | titlecase }}</p></div>
+      </div>
+      <div class="meta-item">
+        <ion-icon name="person-outline"></ion-icon>
+        <div><span class="meta-label">Reportado por</span><p>{{ report.reportedByName }}</p></div>
+      </div>
+      <div class="meta-item">
+        <ion-icon name="time-outline"></ion-icon>
+        <div><span class="meta-label">Fecha</span><p>{{ report.createdAt | timeAgo }}</p></div>
+      </div>
+    </div>
+
+    <!-- Descripción -->
+    <p class="section-title">DESCRIPCIÓN</p>
+    <p class="detail-desc">{{ report.description }}</p>
+
+    <!-- Gestión Técnica — solo Admin y Mantenimiento -->
+    <ng-container *ngIf="canManage()">
+      <p class="section-title">GESTIÓN TÉCNICA</p>
+      <ion-item lines="none" class="input-item">
+        <ion-select [(ngModel)]="newStatus" interface="popover" label="Estado">
+          <ion-select-option value="pendiente">Pendiente</ion-select-option>
+          <ion-select-option value="en_reparacion">En reparación</ion-select-option>
+          <ion-select-option value="listo" *ngIf="isAdmin()">Listo</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none" class="input-item" *ngIf="isAdmin()">
+        <ion-textarea
+          placeholder="Añade actualización técnica..."
+          [(ngModel)]="newComment"
+          rows="3"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-button expand="block" class="btn-primary" (click)="updateReport()">
+        <ion-icon name="save-outline" slot="start"></ion-icon>
+        Actualizar Incidencia
+      </ion-button>
+    </ng-container>
+
+    <!-- Comentarios -->
+    <p class="section-title">COMENTARIOS TÉCNICOS</p>
+    <div class="comment-list">
+      <div class="comment-item" *ngFor="let c of report.comments">
+        <div class="comment-header">
+          <strong>{{ c.authorName }}</strong>
+          <span class="comment-role">{{ c.authorRole }}</span>
+        </div>
+        <p class="comment-text">{{ c.text }}</p>
+        <span class="comment-date">{{ c.createdAt | timeAgo }}</span>
+      </div>
+      <p class="empty-comments" *ngIf="report.comments.length === 0">Sin comentarios aún.</p>
+    </div>
+
+    <!-- Historial -->
+    <p class="section-title">HISTORIAL DE ACTIVIDAD</p>
+    <div class="history-list">
+      <div class="history-item" *ngFor="let h of report.history">
+
+        <!-- Ícono dinámico según tipo de acción -->
+        <div class="history-dot" [ngClass]="getHistoryClass(h.action)">
+          <ion-icon [name]="getHistoryIcon(h.action)"></ion-icon>
+        </div>
+
+        <div class="history-content">
+          <p class="history-action">{{ h.action }}</p>
+          <span class="history-meta">{{ h.performedByName }} · {{ h.timestamp | timeAgo }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Inicio</ion-title>
+    <ion-buttons slot="end">
+      <ion-avatar class="toolbar-avatar" (click)="goToProfile()">
+        <ion-icon name="person-circle-outline" class="toolbar-avatar-icon"></ion-icon>
+      </ion-avatar>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="home-content" [scrollY]="true">
+
+  <!-- Pull-to-refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      pullingText="Desliza para actualizar"
+      refreshingSpinner="crescent"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Skeleton loader — mostrar mientras carga -->
+  <ng-container *ngIf="isLoading">
+    <div class="skeleton-wrap" *ngFor="let i of [1,2,3]">
+      <ion-skeleton-text animated class="home-skeleton"></ion-skeleton-text>
+    </div>
+  </ng-container>
+
+  <!-- Contenido real -->
+  <ng-container *ngIf="!isLoading">
+  <div class="greeting-section">
+    <p class="greeting-sub">Buenos días,</p>
+    <h2 class="greeting-name">{{ user()?.name }}</h2>
+    <p class="greeting-dept">{{ user()?.department }}</p>
+  </div>
+
+  <!-- Alertas urgentes -->
+  <p class="section-title"> INCIDENCIAS URGENTES</p>
+  <div *ngIf="urgentReports().length > 0; else noUrgent">
+    <div class="urgent-scroll">
+      <ion-card class="urgent-card" button *ngFor="let r of urgentReports()" (click)="goToDetail(r.id)">
+        <ion-card-content>
+          <div class="urgent-header">
+            <span class="badge badge-urgent">CRÍTICO</span>
+            <span class="urgent-time">{{ r.createdAt | timeAgo }}</span>
+          </div>
+          <h3 class="urgent-title">{{ r.title }}</h3>
+          <p class="urgent-location">
+            <ion-icon name="location-outline"></ion-icon> {{ r.location }}
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+  <ng-template #noUrgent>
+    <div class="recent-empty">
+      <ion-icon name="notifications-off-outline"></ion-icon>
+      <p>No hay incidencias urgentes por el momento.</p>
+    </div>
+  </ng-template>
+
+  <!-- Botón principal -->
+  <div class="main-action-section">
+    <ion-button expand="block" class="btn-primary report-btn" (click)="goToNewReport()">
+      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+      Reportar Incidencia
+    </ion-button>
+  </div>
+
+  <!-- Accesos rápidos -->
+  <p class="section-title quick-access-title">ACCESOS RÁPIDOS</p>
+  <ion-grid class="quick-grid">
+    <ion-row>
+      <ion-col size="6">
+        <ion-card class="quick-card" button (click)="goToMyReports()">
+          <ion-card-content>
+            <ion-icon name="document-text-outline" class="quick-icon"></ion-icon>
+            <p>Mis Reportes</p>
+            <span class="quick-count">{{ myReports().length }}</span>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card class="quick-card pending" button (click)="goToPending()">
+          <ion-card-content>
+            <ion-icon name="time-outline" class="quick-icon"></ion-icon>
+            <p>Pendientes</p>
+            <span class="quick-count">{{ pendingReports().length }}</span>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Reportes recientes -->
+  <div class="recent-header">
+    <p class="section-title">REPORTES RECIENTES</p>
+    <ion-button fill="clear" size="small" (click)="goToAllReports()">Ver todos</ion-button>
+  </div>
+
+  <div class="recent-list">
+    <ion-card class="recent-card" *ngFor="let r of recentReports()" (click)="goToDetail(r.id)">
+      <ion-card-content>
+        <div class="recent-row">
+          <div class="recent-icon-wrap">
+            <ion-icon [name]="getCategoryIcon(r.category)"></ion-icon>
+          </div>
+          <div class="recent-info">
+            <p class="recent-title">{{ r.title }}</p>
+            <p class="recent-location">{{ r.location }}</p>
+            <p class="recent-date">{{ r.createdAt | timeAgo }}</p>
+          </div>
+          <span class="badge" [ngClass]="getStatusClass(r.status)">{{ getStatusLabel(r.status) }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="recent-empty" *ngIf="recentReports().length === 0">
+      <ion-icon name="document-text-outline"></ion-icon>
+      <p>No tienes reportes aún. ¡Reporta tu primera incidencia!</p>
+    </div>
+  </div>
+
+  </ng-container>
+
+</ion-content>

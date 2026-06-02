@@ -1,0 +1,7 @@
+{
+  "name": "Scarleth-Proyecto",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

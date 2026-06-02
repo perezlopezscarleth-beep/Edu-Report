@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Alertas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToNewReport()" aria-label="Nueva incidencia">
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="notifications-content" [scrollY]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      pullingText="Desliza para actualizar"
+      refreshingSpinner="crescent"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list lines="full" class="notifications-list" *ngIf="notifications().length > 0">
+    <ion-item
+      *ngFor="let n of notifications()"
+      class="notif-item"
+      button
+      detail
+      [class.unread]="!n.read"
+      (click)="openNotification(n)">
+      <ion-icon [name]="n.icon" slot="start" [color]="n.urgent ? 'danger' : 'primary'" class="notif-icon"></ion-icon>
+      <ion-label>
+        <h3 class="notif-title">{{ n.title }}</h3>
+        <p class="notif-body">{{ n.body }}</p>
+        <p class="notif-time">{{ n.timestamp | timeAgo }}</p>
+      </ion-label>
+      <ion-badge slot="end" color="danger" *ngIf="n.urgent" class="urgent-badge">!</ion-badge>
+    </ion-item>
+  </ion-list>
+
+  <div class="empty-notifications" *ngIf="notifications().length === 0">
+    <ion-icon name="notifications-off-outline"></ion-icon>
+    <h3>No tienes alertas por el momento</h3>
+    <p>Las alertas aparecerán aquí cuando haya cambios en tus reportes</p>
+    <ion-button color="primary" (click)="goToNewReport()">Reportar incidencia</ion-button>
+  </div>
+
+  <ion-modal [isOpen]="isModalOpen" [breakpoints]="[0, 0.55, 1]" [initialBreakpoint]="0.55" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Detalle de alerta</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content *ngIf="selectedReport" class="notif-modal-content">
+        <div class="modal-content">
+          <img [src]="selectedReport.photoUrl || 'assets/img/placeholder.png'" class="detail-image" [alt]="selectedReport.title" />
+          <h2>{{ selectedReport.title }}</h2>
+          <p><strong>Ubicación:</strong> {{ selectedReport.location }}</p>
+          <p>
+            <strong>Estado:</strong>
+            <span class="badge" [ngClass]="getStatusClass(selectedReport.status)">
+              {{ getStatusLabel(selectedReport.status) }}
+            </span>
+          </p>
+          <p><strong>Descripción:</strong> {{ selectedReport.description }}</p>
+          <ion-button expand="block" (click)="goToDetail(selectedReport.id)">Ver incidencia completa</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

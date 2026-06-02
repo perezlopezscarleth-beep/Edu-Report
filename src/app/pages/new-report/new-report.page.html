@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva Incidencia</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="new-report-content" [scrollY]="true">
+  <form class="report-form" (ngSubmit)="onSubmit()" novalidate>
+    <input
+      #photoInput
+      type="file"
+      accept="image/*"
+      hidden
+      (change)="onPhotoFileSelected($event)"
+    />
+    <p class="form-subtitle">Completa los detalles para reportar un problema en las instalaciones.</p>
+
+    <!-- CATEGORÍA -->
+    <p class="section-title">CATEGORÍA</p>
+    <div class="category-grid">
+      <button type="button" class="cat-item" *ngFor="let cat of categories"
+           [class.selected]="form.category === cat.value"
+           (click)="selectCategory(cat.value)">
+        <ion-icon [name]="cat.icon"></ion-icon>
+        <span>{{ cat.label }}</span>
+      </button>
+    </div>
+    <p class="field-error" *ngIf="errors['category']">{{ errors['category'] }}</p>
+
+    <!-- Otros - Input personalizado -->
+    <div class="other-category-input" *ngIf="form.category === 'otros'">
+      <ion-item lines="none" class="input-item">
+        <ion-icon name="document-outline" slot="start" color="medium"></ion-icon>
+        <ion-input
+          type="text"
+          placeholder="Especifique la categoría..."
+          [(ngModel)]="otherCategory"
+          name="otherCategory"
+        ></ion-input>
+      </ion-item>
+    </div>
+
+    <!-- PRIORIDAD AUTO -->
+    <div class="auto-priority-banner" *ngIf="autoPriority">
+      <ion-icon name="warning-outline"></ion-icon>
+      Esta categoría se marca automáticamente como <strong>URGENTE</strong>
+    </div>
+
+    <!-- UBICACIÓN -->
+    <p class="section-title">UBICACIÓN</p>
+    <ion-item lines="none" class="input-item">
+      <ion-icon name="location-outline" slot="start" color="medium"></ion-icon>
+      <ion-select
+        placeholder="Seleccione ubicación"
+        [(ngModel)]="form.location"
+        name="location"
+        interface="action-sheet"
+        (ionChange)="onLocationChange()">
+        <ion-select-option *ngFor="let loc of locations" [value]="loc">{{ loc }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <p class="field-error" *ngIf="errors['location']">{{ errors['location'] }}</p>
+
+    <!-- DESCRIPCIÓN -->
+    <p class="section-title">DESCRIPCIÓN BREVE</p>
+    <ion-item lines="none" class="input-item">
+      <ion-textarea
+        placeholder="Detalle el problema encontrado..."
+        [value]="form.description"
+        (ionInput)="onDescriptionInput($event)"
+        name="description"
+        rows="4"
+        maxlength="500"
+        [autoGrow]="true"
+      ></ion-textarea>
+    </ion-item>
+    <p class="char-count">{{ form.description.length }}/500</p>
+    <p class="field-error" *ngIf="errors['description']">{{ errors['description'] }}</p>
+
+    <!-- FOTO -->
+    <p class="section-title">FOTO <span class="required-star">*</span></p>
+    <div class="photo-zone" (click)="showPhotoOptions()" *ngIf="!form.photoUrl">
+      <ion-icon name="camera-outline" class="photo-icon"></ion-icon>
+      <p>Adjuntar Foto</p>
+      <span class="photo-hint">Toca para abrir cámara o galería</span>
+    </div>
+    <div class="photo-preview" *ngIf="form.photoUrl">
+      <img [src]="form.photoUrl" alt="Vista previa" />
+      <ion-button fill="clear" class="remove-photo" (click)="removePhoto()">
+        <ion-icon name="close-circle" color="danger"></ion-icon>
+      </ion-button>
+    </div>
+    <p class="field-error" *ngIf="errors['photo']">{{ errors['photo'] }}</p>
+
+    <!-- PRIORIDAD MANUAL -->
+    <p class="section-title">PRIORIDAD</p>
+    <div class="priority-selector">
+      <div class="priority-opt baja"   [class.sel]="form.priority==='baja'"   (click)="setPriority('baja')">Baja</div>
+      <div class="priority-opt media"  [class.sel]="form.priority==='media'"  (click)="setPriority('media')">Media</div>
+      <div class="priority-opt urgente" [class.sel]="form.priority==='urgente'" (click)="setPriority('urgente')">Urgente</div>
+    </div>
+
+    <!-- BOTÓN ENVIAR -->
+    <ion-button expand="block" class="btn-primary submit-btn" type="submit" [disabled]="isSubmitting">
+      <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+      <span *ngIf="!isSubmitting">Enviar Reporte</span>
+      <ion-icon name="send-outline" slot="end" *ngIf="!isSubmitting"></ion-icon>
+    </ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Alerta de Duplicado</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="duplicate-content">
+  <div class="duplicate-wrapper">
+    <div class="alert-icon-wrap">
+      <ion-icon name="warning" class="alert-icon"></ion-icon>
+    </div>
+    <h2>Ya existe un reporte similar</h2>
+    <p class="alert-desc">Hemos detectado una incidencia reportada recientemente en esta ubicación.</p>
+
+    <ion-card class="existing-card" (click)="viewExisting()" *ngIf="existing">
+      <ion-card-content>
+        <img [src]="existing.photoUrl" class="existing-thumb" *ngIf="existing.photoUrl" [alt]="existing.title" />
+        <h3>{{ existing.title }}</h3>
+        <p>{{ existing.location }}</p>
+        <span class="badge" [ngClass]="getStatusClass(existing.status)">{{ getStatusLabel(existing.status) }}</span>
+        <p class="reported-by">Reportado por {{ existing.joinedBy.length + 1 }} persona(s)</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" class="btn-primary" (click)="joinExisting()">
+      <ion-icon name="people-outline" slot="start"></ion-icon>
+      Unirme a este reporte
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" color="medium" class="secondary-action" (click)="createNew()">
+      Crear nuevo reporte de todas formas
+    </ion-button>
+  </div>
+</ion-content>

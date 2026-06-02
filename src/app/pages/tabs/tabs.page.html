@@ -1,0 +1,32 @@
+<ion-tabs>
+  <ion-router-outlet></ion-router-outlet>
+  <ion-tab-bar slot="bottom">
+
+    <ion-tab-button tab="home" href="/tabs/home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="reports" href="/tabs/reports">
+      <ion-icon name="document-text-outline"></ion-icon>
+      <ion-label>Incidencias</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="new-report" href="/tabs/new-report" class="center-tab">
+      <div class="fab-btn">
+        <ion-icon name="add-outline"></ion-icon>
+      </div>
+    </ion-tab-button>
+
+    <ion-tab-button tab="notifications" href="/tabs/notifications">
+      <ion-icon name="notifications-outline"></ion-icon>
+      <ion-label>Alertas</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="profile" href="/tabs/profile">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+</ion-tabs>
